@@ -1,0 +1,68 @@
+name: "Build Docker Release"
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '30 0 * * *'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@main
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@master
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@master
+
+      - name: Login Docker Hub
+        uses: docker/login-action@master
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # 获得仓库中的 ReleaseTag
+      - name: Set Version
+        id: set-version
+        run: |
+          echo "ReleaseTag=$(cat ReleaseTag | head -n1)" >> $GITHUB_ENV
+          echo "version=$(cat ReleaseTag | head -n1)" >> $GITHUB_OUTPUT
+
+      # 缓存 ReleaseTag ，用作与下一次执行任务时获取到的 ReleaseTag 做对比
+      - name: Cache tag
+        id: cache-tag
+        uses: actions/cache@main
+        with:
+          path: ./tag/
+          key: ${{ runner.os }}-tag-v${{ steps.set-version.outputs.version }}
+
+      # 获取 Latest Release Tag，未命中缓存则更新 ReleaseTag
+      - name: Get latest release tag
+        id: get-release-tag
+        if: steps.cache-tag.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p ./tag
+          echo ${{ steps.set-version.outputs.version }} > ./tag/tag-${{ steps.set-version.outputs.version }}
+          echo "status=1" >> $GITHUB_OUTPUT
+
+      - name: Build and push to docker hub
+        if: steps.get-release-tag.outputs.status == 1
+        uses: docker/build-push-action@master
+        with:
+          file: ./Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            ${{ secrets.DOCKER_USERNAME }}/frps:latest
+            ${{ secrets.DOCKER_USERNAME }}/frps:${{ steps.set-version.outputs.version }}
+
+      - name: Sync README.md to Docker Hub
+        uses: ms-jpq/sync-dockerhub-readme@whale
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: ${{ secrets.DOCKER_USERNAME }}/frps
+          readme: "./README.md"
