@@ -1,0 +1,44 @@
+name: Update Release Tag
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout codebase
+        uses: actions/checkout@main
+
+      # 获取 Latest Release Tag ， cut 切割无关内容。和仓库中 LocalReleaseTag 对比，之后输出 tag 给之后的步骤
+      - name: Set Version
+        id: set-version
+        run: |
+          TAG=$(wget --no-check-certificate -qO- https://api.github.com/repos/fatedier/frp/tags | grep 'name' | cut -d\" -f4 | head -1 | cut -c 2- )
+          LocalReleaseTag=$(cat ReleaseTag | head -n1)
+          OnlineReleaseTag=${TAG}
+          echo "LocalReleaseTag=$(cat ReleaseTag | head -n1)"
+          echo "OnlineReleaseTag=${TAG}"
+          Latest=${LocalReleaseTag}
+          if [ "${LocalReleaseTag}" != "${OnlineReleaseTag}" ]
+          then
+             echo "Latest=${OnlineReleaseTag}" >> $GITHUB_ENV
+             echo "status=1" >> $GITHUB_OUTPUT
+          fi
+
+      # 将 Latest Release Tag 写入到 ./ReleaseTag
+      - name: Update ReleaseTag
+        if: steps.set-version.outputs.status == 1
+        run: |
+          echo ${{ env.Latest }} > ./ReleaseTag
+
+      # Push 到 GitHub 的项目当中
+      - name: Push
+        if: steps.set-version.outputs.status == 1
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git commit -am "Update ReleaseTag ${{ env.Latest }}"
+          git push -v --progress
