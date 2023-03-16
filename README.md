@@ -17,4 +17,4 @@ docker run -it \
 
 ---
 
-[kingfingerpro/Frps](https://github.com/kingfingerpro/Frps)，每日检测更新，[Releases · fatedier/frp](https://github.com/fatedier/frp/releases)，保持同步官方版本
+[kingfingerpro/frps-in-Docker](https://github.com/kingfingerpro/frps-in-Docker)，每日检测更新，[Releases · fatedier/frp](https://github.com/fatedier/frp/releases)，保持同步官方版本
