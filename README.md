@@ -5,7 +5,7 @@
 ## 启动容器
 
 ```bash
-docker run -it \
+docker run \
   --name=frps \
   --network host \
   -v '/path/to/dir':/frps \
