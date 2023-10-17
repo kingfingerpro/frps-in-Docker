@@ -16,7 +16,7 @@ RUN VERSION=$(wget --no-check-certificate -qO- https://api.github.com/repos/fate
     && mkdir /frp \
     && mkdir /frps \
     && mv frps /frp \
-    && mv frps.ini /frps \
+    && mv frps.toml /frps \
     && cd .. \
     && rm -rf *.tar.gz frp_${VERSION}_linux_${PLATFORM}
 
