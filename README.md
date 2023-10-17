@@ -13,7 +13,7 @@ docker run \
   -d kingfingerpro/frps
 ```
 
-其中 `'/path/to/dir'` 需修改为实际存放配置文件 `[frps.ini](frps.toml)` 的目录
+其中 `'/path/to/dir'` 需修改为实际存放配置文件 `[frps.ini]` `(frps.toml)` 的目录
 
 ---
 
