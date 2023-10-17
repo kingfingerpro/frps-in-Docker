@@ -15,7 +15,7 @@ docker run \
 
 其中 `'/path/to/dir'` 需修改为实际存放配置文件 `[frps.ini]` `(frps.toml)` 的目录
 
-从0.52.0版本起弃用 INI ，改用 TOML、YAML、JSON 作为配置文件格式。详见 [frp · Release / v0.52.0](https://github.com/fatedier/frp/releases/tag/v0.52.0)
+从0.52.0版本起弃用 INI ，改用 TOML、YAML、JSON 作为配置文件格式。详见 [Releases v0.52.0 · fatedier/frp](https://github.com/fatedier/frp/releases/tag/v0.52.0)
 
 ---
 
