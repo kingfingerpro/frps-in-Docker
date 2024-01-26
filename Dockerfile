@@ -6,7 +6,9 @@ WORKDIR /
 
 RUN apk add --no-cache tzdata \
     && ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime \
-    && echo ${TZ} > /etc/timezone
+    && echo ${TZ} > /etc/timezone \
+    && sysctl -w net.core.rmem_max=5000000 \
+    && sysctl -w net.core.wmem_max=5000000
 
 RUN VERSION=$(wget --no-check-certificate -qO- https://api.github.com/repos/fatedier/frp/tags | grep 'name' | cut -d\" -f4 | head -1 | cut -c 2- ) \
     && if [ "$(uname -m)" = "x86_64" ]; then export PLATFORM=amd64 ; else if [ "$(uname -m)" = "aarch64" ]; then export PLATFORM=arm64 ; fi fi \
