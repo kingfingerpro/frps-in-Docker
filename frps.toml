@@ -1,0 +1,161 @@
+
+# https://gofrp.org/zh-cn/docs/reference/
+
+# 必须包含 IPv6 的文字地址或主机名
+# 在方括号中，如"[::1]:80"、"[ipv6-host]:http"或"[ipv6-host%zone]:80"
+# 对于单个"bind_addr"字段，不需要方括号，如"bind_addr = ::"。
+bindAddr = "::"
+bindAddr = "0.0.0.0"
+bindPort = 7000
+
+# 用于 kcp 协议的 udp 端口，可以与 'bind_port' 相同。
+# 如果未设置，kcp 在 frps 中被禁用。
+kcpBindPort = 7000
+
+# 用于 quic 协议的 udp 端口。
+# 如果没有设置，quic 在 frps 中被禁用。
+# quicBindPort = 7002
+
+# 指定代理监听哪个地址，默认值与bind_addr相同
+# proxy_bind_addr = "127.0.0.1"
+
+# quic协议选项
+# transport.quic.keepalivePeriod = 10
+# transport.quic.maxIdleTimeout = 30
+# transport.quic.maxIncomingStreams = 100000
+
+# 心跳配置，不建议修改默认值
+# heartbeat_timeout 默认值为 90。设置负值即可禁用。
+# transport.heartbeatTimeout = 90
+
+# 每个代理中的池计数将不超过 maxPoolCount。
+transport.maxPoolCount = 5
+
+# 如果使用tcp流复用，默认为true
+# transport.tcpMux = true
+
+# 指定 tcp mux 的保持活动间隔。
+# 仅当 tcpMux 为 true 时才有效。
+# transport.tcpMuxKeepaliveInterval = 60
+
+# tcpKeepalive 指定 frpc 和 frps 之间活动网络连接的 keep-alive 探测之间的时间间隔。
+# 如果为负，则禁用保持活动探测。
+# transport.tcpKeepalive = 7200
+
+# Transport.tls.force 指定是否只接受 TLS 加密的连接。 默认情况下，该值为 false。
+tls.force = false
+
+# transport.tls.certFile = "server.crt"
+# transport.tls.keyFile = "server.key"
+# transport.tls.trustedCaFile = "ca.crt"
+
+# 如果要支持虚拟主机，必须设置监听的http端口（可选）
+# 注意：http端口和https端口可以与bind_port相同
+vhostHTTPPort = 80
+vhostHTTPSPort = 443
+
+# vhost http服务器的响应头超时（秒），默认为60秒
+# vhostHTTPTimeout = 60
+
+# tcpmuxHTTPConnectPort 指定服务器监听 TCP 的端口
+# HTTP CONNECT 请求。 如果值为0，服务器不会复用TCP
+# 单个端口上的请求。 如果不是 - 它将监听这个值
+# HTTP CONNECT 请求。 默认情况下，该值为 0。
+# tcpmuxHTTPConnectPort = 1337
+
+# 如果 tcpmux_passthrough 为 true，frps 不会对流量进行任何更新。
+# tcpmuxPassthrough = false
+
+# 配置Web服务器以启用frps的仪表板。
+# 仅当设置了 webServer.port 时，仪表板才可用。
+webServer.addr = "127.0.0.1"
+webServer.port = 7500
+webServer.user = "admin"
+webServer.password = "admin"
+# webServer.tls.certFile = "server.crt"
+# webServer.tls.keyFile = "server.key"
+# dashboard assets directory(only for debug mode)
+# webServer.assetsDir = "./static"
+
+# 在仪表板监听器中启用 golang pprof 处理程序。
+# 必须首先设置仪表板端口
+# webServer.pprofEnable = false
+
+#enablePrometheus 将在 /metrics api 中导出 webServer 上的 prometheus 指标。
+# enablePrometheus = true
+
+# 控制台或真实日志文件路径，如 ./frps.log
+log.to = "./frps.log"
+# trace, debug, info, warn, error
+log.level = "info"
+log.maxDays = 3
+# 当 log.to 为控制台时禁用日志颜色，默认为 false
+log.disablePrintColor = false
+
+#DetailedErrorsToClient 定义是否将特定错误（带有调试信息）发送到 frpc。 默认情况下，该值为 true。
+detailedErrorsToClient = true
+
+# auth.method 指定使用什么身份验证方法对 frpc 和 frps 进行身份验证。
+# 如果指定了"token" - 令牌将被读入登录消息。
+# 如果指定"oidc" - 将使用 OIDC 设置颁发 OIDC（开放 ID 连接）令牌。 默认情况下，该值为"token"。
+auth.method = "token"
+
+# auth.additionalScopes 指定包含身份验证信息的附加范围。
+# 可选值为 HeartBeats、NewWorkConns。
+# auth.additionalScopes = ["HeartBeats", "NewWorkConns"]
+
+# auth token
+auth.token ="123456"
+
+# oidc 发行者指定验证 OIDC 令牌的发行者。
+# auth.oidc.issuer = ""
+# oidcaudience 指定验证时 OIDC 令牌应包含的受众。
+# auth.oidc.audience = ""
+# oidc SkipExpiryCheck 指定是否在 OIDC 令牌过期时跳过检查。
+# auth.oidc.skipExpiryCheck = false
+# oidc skipIssuerCheck 指定是否跳过检查 OIDC 令牌的颁发者声明是否与 OidcIssuer 中指定的颁发者匹配。
+# auth.oidc.skipIssuerCheck = false
+
+# userConnTimeout 指定等待工作连接的最长时间。
+# userConnTimeout = 10
+
+# 只允许 frpc 绑定您列出的端口。 默认情况下，不会有任何限制。
+# allowPorts = [
+#   { start = 2000, end = 3000 },
+#   { single = 3001 },
+#   { single = 3003 },
+#   { start = 4000, end = 50000 }
+# ]
+
+# 每个客户端可以使用的最大端口数，默认值为0表示无限制
+maxPortsPerClient = 0
+
+# 如果subDomainHost不为空，则可以在frpc的配置文件中设置type为http或https时的子域名
+# subDomainHost = "frps.com"
+# subdomain为test时，路由使用的host为test.frps.com
+
+# subDomainHost = "*.proxy.frps.com"
+# subdomain为test时，路由使用的host为test.proxy.frps.com
+
+# HTTP 请求的自定义 404 页面
+# custom404Page = "/path/to/404.html"
+
+# 指定udp数据包大小，单位为字节。 如果未设置，则默认值为 1500。
+# 这个参数在客户端和服务器之间应该是相同的。
+# 它影响 udp 和 sudp 代理。
+udpPacketSize = 1500
+
+# NAT打洞策略数据的保留时间。
+natholeAnalysisDataReserveHours = 168
+
+# [[http插件]]
+# name = "user-manager"
+# addr = "127.0.0.1:9000"
+# path = "/handler"
+# ops = ["Login"]
+
+# [[http插件]]
+# name = "port-manager"
+# addr = "127.0.0.1:9001"
+# path = "/handler"
+# ops = ["NewProxy"]
