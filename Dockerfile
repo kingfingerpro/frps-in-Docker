@@ -22,4 +22,4 @@ RUN VERSION=$(wget --no-check-certificate -qO- https://api.github.com/repos/fate
 
 VOLUME /frps
 
-CMD /frp/frps -c /frps/frps.toml
+CMD ["/frp/frps","-c","/frps/frps.toml"]
